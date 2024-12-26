@@ -39,7 +39,7 @@
 				<td>[${listCount-index.count+1}]</td>
 				<td>${vo.name}</td>
 				<td>${vo.regDate}</td>
-				<td><a href="${pageContext.request.contextPath}/deleteform/${vo.id}">삭제</a></td>	
+				<td><a href="${pageContext.request.contextPath}/delete/${vo.id}">삭제</a></td>	
 			</tr>
 			<tr>
 				<td colspan=4>

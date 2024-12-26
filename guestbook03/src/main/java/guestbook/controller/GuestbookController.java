@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import guestbook.repository.GuestbookRepository;
 import guestbook.vo.GuestbookVo;
@@ -31,13 +32,13 @@ public class GuestbookController {
 		return "redirect:/";
 	}
 	
-	@RequestMapping("/deleteform/{id}")
-	public String deleteform(@PathVariable("id") Long id, Model model) {
+	@RequestMapping(value="/delete/{id}", method=RequestMethod.GET)
+	public String delete(@PathVariable("id") Long id, Model model) {
 		model.addAttribute("id", id);
 		return "delete";
 	}
 	
-	@RequestMapping("/delete/{id}")
+	@RequestMapping(value="/delete/{id}", method=RequestMethod.POST)
 	public String delete(@PathVariable("id") Long id, GuestbookVo vo) {
 		guestbookRepository.deleteByIdAndPassword(id, vo.getPassword());
 		return "redirect:/";
