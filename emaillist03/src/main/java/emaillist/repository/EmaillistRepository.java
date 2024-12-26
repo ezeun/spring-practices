@@ -8,8 +8,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
 import emaillist.vo.EmaillistVo;
 
+@Repository
 public class EmaillistRepository {
 	public Boolean deleteByEmail(String email) {
 		boolean result = false;
