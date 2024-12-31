@@ -1,25 +1,34 @@
 package guestbook.repository;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import org.springframework.stereotype.Repository;
 
+import guestbook.repository.template.JdbcContext;
 import guestbook.vo.GuestbookVo;
 
 @Repository
 public class GuestbookRepository {
-
+	private JdbcContext jdbcContext;
+	private DataSource dataSource;
+	
+	public GuestbookRepository(JdbcContext jdbcContext, DataSource dataSource) {
+		this.jdbcContext = jdbcContext;
+		this.dataSource = dataSource;
+	}
+	
 	public List<GuestbookVo> findAll() {
 		List<GuestbookVo> result = new ArrayList<>();
 		
 		try (
-				Connection conn = getConnection();
+				Connection conn = dataSource.getConnection();
 				PreparedStatement pstmt = conn.prepareStatement("select id, name, contents, date_format(reg_date, '%Y-%m-%d %h:%i:%s') from guestbook order by reg_date desc");
 				ResultSet rs = pstmt.executeQuery();
 				
@@ -46,63 +55,52 @@ public class GuestbookRepository {
 	}
 
 	public int insert(GuestbookVo vo) {
-		int count = 0;
-		
-		try (
-			Connection conn = getConnection();
-			PreparedStatement pstmt = conn.prepareStatement("insert into guestbook values(null, ?, ?, ?, now())");
-		){
-			// 4. Parameter Binding  
-			pstmt.setString(1, vo.getName()); 
-			pstmt.setString(2, vo.getPassword()); 
-			pstmt.setString(3, vo.getContents()); 
-			
-			// 5. SQL 실행
-			count = pstmt.executeUpdate();
-			
-		} catch (SQLException e) {
-			System.out.println("error:" + e);
-		} 
-		
-		return count;
+		return jdbcContext.excuteUpdate(
+				"insert into guestbook values(null, ?, ?, ?, now())",
+				new Object[] {vo.getName(), vo.getPassword(), vo.getContents()});
+//		int count = 0;
+//		
+//		try (
+//			Connection conn = dataSource.getConnection();
+//			PreparedStatement pstmt = conn.prepareStatement("insert into guestbook values(null, ?, ?, ?, now())");
+//		){
+//			// 4. Parameter Binding  
+//			pstmt.setString(1, vo.getName()); 
+//			pstmt.setString(2, vo.getPassword()); 
+//			pstmt.setString(3, vo.getContents()); 
+//			
+//			// 5. SQL 실행
+//			count = pstmt.executeUpdate();
+//			
+//		} catch (SQLException e) {
+//			System.out.println("error:" + e);
+//		} 
+//		
+//		return count;
 	}
 
 	public int deleteByIdAndPassword(Long id, String password) {
-		int count = 0;
-		
-		try (
-			Connection conn = getConnection();
-			PreparedStatement pstmt = conn.prepareStatement("delete from guestbook where id = ? and password= ?");
-		){
-			// 4. Parameter Binding  
-			pstmt.setLong(1, id); 
-			pstmt.setString(2, password); 
-			
-			// 5. SQL 실행
-			count = pstmt.executeUpdate();
-			
-		} catch (SQLException e) {
-			System.out.println("error:" + e);
-		} 
-		
-		return count;
-	}
-	
-	private Connection getConnection() throws SQLException {
-		Connection conn = null;
-		try {
-			// 1. JDBC Driver 로딩
-			Class.forName("org.mariadb.jdbc.Driver");
-	
-			// 2. 연결하기 
-			String url = "jdbc:mariadb://192.168.0.118:3306/webdb";
-			conn = DriverManager.getConnection(url, "webdb", "webdb");
-			
-		} catch (ClassNotFoundException e) {
-			System.out.println("드라이버 로딩 실패:" + e);
-		} 
-		
-		return conn;
+		return jdbcContext.excuteUpdate(
+				"delete from guestbook where id = ? and password= ?", 
+				new Object[] {id, password});
+//		int count = 0;
+//		
+//		try (
+//			Connection conn = dataSource.getConnection();
+//			PreparedStatement pstmt = conn.prepareStatement("delete from guestbook where id = ? and password= ?");
+//		){
+//			// 4. Parameter Binding  
+//			pstmt.setLong(1, id); 
+//			pstmt.setString(2, password); 
+//			
+//			// 5. SQL 실행
+//			count = pstmt.executeUpdate();
+//			
+//		} catch (SQLException e) {
+//			System.out.println("error:" + e);
+//		} 
+//		
+//		return count;
 	}
 
 }
