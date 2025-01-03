@@ -18,6 +18,7 @@
 		
 		<label for="file">파일:</label>
 		<input type="file" id="file" name="file">
+		<input type="file" id="file" name="file">
 		<br><br>
 		
 		<br>
