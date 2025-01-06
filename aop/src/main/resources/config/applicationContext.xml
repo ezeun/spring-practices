@@ -11,10 +11,11 @@
         http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
         http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
-
+	<aop:aspectj-autoproxy/>
+	
 	<context:annotation-config />
 
-	<context:component-scan base-package="aop.service">
+	<context:component-scan base-package="aop.service, aop.aspect">
 		<context:include-filter type="annotation"
 			expression="org.springframework.stereotype.Repository" />
 		<context:include-filter type="annotation"
