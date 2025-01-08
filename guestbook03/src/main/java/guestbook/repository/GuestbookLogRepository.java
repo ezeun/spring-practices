@@ -1,7 +1,10 @@
 package guestbook.repository;
 
+import org.springframework.stereotype.Repository;
+
 import guestbook.repository.template.JdbcContext;
 
+@Repository
 public class GuestbookLogRepository {
 	private JdbcContext jdbcContext;
 	
