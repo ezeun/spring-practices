@@ -9,6 +9,11 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.interceptor.DefaultTransactionAttribute;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import guestbook.repository.GuestbookLogRepository;
@@ -17,6 +22,9 @@ import guestbook.vo.GuestbookVo;
 
 @Service
 public class GuestbookService {
+	@Autowired
+	private PlatformTransactionManager transactionManager;
+	
 	@Autowired
 	private DataSource dataSource;
 	
@@ -33,14 +41,28 @@ public class GuestbookService {
 	}
 	
 	public void deleteContents(Long id, String password) {
-		GuestbookVo vo = guestbookRepository.findById(id);
-		if(vo == null) {
-			return;
-		}
+		// TX:BEGIN /////
+		TransactionStatus txStatus = transactionManager.getTransaction(new DefaultTransactionDefinition());
 		
-		int count = guestbookRepository.deleteByIdAndPassword(id, password);
-		if(count == 1) {
-			guestbookLogRepository.update(vo.getRegDate());
+		try {
+			GuestbookVo vo = guestbookRepository.findById(id);
+			if(vo == null) {
+				return;
+			}
+			
+			int count = guestbookRepository.deleteByIdAndPassword(id, password);
+			if(count == 1) {
+				guestbookLogRepository.update(vo.getRegDate());
+			}
+			
+			// TX:END(SUCCESS) /////
+			transactionManager.commit(txStatus);
+			
+		} catch(Throwable e) {
+			// TX:END(FAIL) /////
+			transactionManager.rollback(txStatus);
+			
+			throw new RuntimeException(e);
 		}
 	}
 	
@@ -61,6 +83,7 @@ public class GuestbookService {
 			
 			// TX:END(SUCCESS) /////
 			conn.commit();
+			
 		} catch (SQLException e) {
 			// TX:END(FAIL) /////
 			try {

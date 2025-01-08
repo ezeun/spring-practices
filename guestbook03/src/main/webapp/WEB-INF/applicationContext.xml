@@ -25,6 +25,11 @@
 		<constructor-arg index="0" ref="dataSource"/>
 	</bean>
 
+	<!-- Transaction Maanger -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<constructor-arg index="0" ref="dataSource" />
+	</bean>
+
 	<context:annotation-config />
 
 	<context:component-scan base-package="guestbook.repository, guestbook.service">
