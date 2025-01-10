@@ -4,7 +4,7 @@
     soundsystem
        |--- CDPlayer.java
        |--- CompactDisc.java
-        |--- HighSchoolRapper2Final
+        |--- HighSchoolRapper2Final.java
 
     config.soundsystem
        |--- CDPlayerConfig.java
