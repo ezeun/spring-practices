@@ -14,5 +14,5 @@
   	<module>aop</module>
   	<module>validation</module>
   	<module>bean-wiring</module>
-  </modules>
+  </modules> 
 </project>
