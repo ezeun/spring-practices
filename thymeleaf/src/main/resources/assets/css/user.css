@@ -6,7 +6,7 @@ ul, ol		{ list-style-type: none }
 
 #user		{ margin:20px auto;	width:540px; }
 #join-form	{
-	width:200px;
+	width:260px;
 	padding:10px;
 	border:1px solid #666;
 	border-radius: 10px;
