@@ -8,10 +8,23 @@
 
 
 <h4>01.값출력 - th:text 속성, th:utext 속성, th:block 태그, [ [ EL ] ]</h4>
+<span th:text="${iVal}"></span> 							<br>
+<span th:text="${lVal}"></span> 							<br>
+<th:block th:text="${fVal}"></th:block> : 적당한 태그가 없는 경우<br>
+<span>[[${bVal}]]</span> 				: Thymeleaf 3.x 지원 <br>
+<span th:text=${sVal}></span>			: HTML Escaped		<br>
+[[${sVal}]]								: HTML Escaped		<br>
+[(${sVal})]								: HTML unEscaped	<br>
+
 
 
 <h4>02.객체출력(Concatenate)</h4>
-
+<ul>
+	<li th:text="${'no:' + userVo.no + ', name:' + userVo.name}"></li>
+	<li th:text="'no:' + ${userVo.no} + ', name:' + ${userVo.name}"></li>
+	<li th:text="|no:${userVo.no}, name:${userVo.name}|">
+	<li>no:[[${userVo.no}]], name:[[${userVo.name}]]</li>
+</ul>
 
 <h4>03.객체출력(null처리)</h4>
 
